@@ -54,7 +54,7 @@
                         Product product = BaseDatos.jdbi.withExtension(ProductDao.class, dao -> dao.getProduct(productoID));
                     %>
 
-                    <img src="../BillarImagenes/<%= product.getImagen() %>" class="card-img-top mb-3" alt="Imagen del Producto">
+                    <img src="BillarImagenes/<%= product.getImagen() %>" class="card-img-top mb-3" alt="Imagen del Producto">
                     <h5 class="card-title"><%= product.getNombre() %></h5>
                     <p class="card-text"><%= product.getDescripcion() %></p>
                     <p class="card-text">Precio: <%= product.getPrecio() %>€</p>
