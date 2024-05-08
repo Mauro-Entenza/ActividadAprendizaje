@@ -1,0 +1,85 @@
+CREATE TABLE Clientes (
+    ClienteID NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    Nombre VARCHAR2(100),
+    Email VARCHAR2(100),
+    Contraseña VARCHAR2(100)
+);
+
+CREATE TABLE Categorias (
+    CategoriaID NUMBER(10) PRIMARY KEY,
+    Nombre VARCHAR2(100)
+);
+
+CREATE TABLE Productos (
+    ProductoID NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    Nombre VARCHAR2(100),
+    Descripcion VARCHAR2(255),
+    Precio NUMBER(10, 2),
+    CategoriaID NUMBER(10),
+    Imagen VARCHAR2(255),
+    FOREIGN KEY (CategoriaID) REFERENCES Categorias(CategoriaID)
+);
+
+CREATE TABLE Pedidos (
+    PedidoID NUMBER(10) PRIMARY KEY,
+    ClienteID NUMBER(10),
+    ProductoID NUMBER(10),
+    Cantidad NUMBER(10),
+    FechaPedido DATE,
+    FOREIGN KEY (ClienteID) REFERENCES Clientes(ClienteID),
+    FOREIGN KEY (ProductoID) REFERENCES Productos(ProductoID)
+);
+
+-- Insertar datos de clientes --
+BEGIN
+INSERT INTO Clientes (Nombre, Email, Contraseña) VALUES
+('Juan Perez', 'juan@example.com', 'abc');
+INSERT INTO Clientes (Nombre, Email, Contraseña) VALUES
+('María López', 'maria@example.com', 'abc');
+INSERT INTO Clientes (Nombre, Email, Contraseña) VALUES
+('Pedro García', 'pedro@example.com', 'abc');
+INSERT INTO Clientes (Nombre, Email, Contraseña) VALUES
+('mauro', 'mauro@example.com', 'mauro');
+EXCEPTION
+WHEN OTHERS THEN 
+ROLLBACK;
+END;
+
+-- Insertar datos de categorías --
+BEGIN
+INSERT INTO Categorias (CategoriaID, Nombre) VALUES
+(1, 'Mesas de billar');
+INSERT INTO Categorias (CategoriaID, Nombre) VALUES
+(2, 'Tacos de billar');
+INSERT INTO Categorias (CategoriaID, Nombre) VALUES
+(3, 'Tizas y accesorios');
+EXCEPTION
+WHEN OTHERS THEN 
+ROLLBACK;
+END;
+
+-- Insertar datos de productos --
+BEGIN
+INSERT INTO Productos (Nombre, Descripcion, Precio, CategoriaID, Imagen) VALUES
+( 'Mesa', 'Mesa de billar de tamaño profesional con acabados de lujo', 1500, 1, 'mesa.webp');
+INSERT INTO Productos (Nombre, Descripcion, Precio, CategoriaID, Imagen) VALUES
+('Taco', 'Taco de billar hecho de madera de arce con punta de cuero', 100, 2, 'taco.jpg');
+INSERT INTO Productos (Nombre, Descripcion, Precio, CategoriaID, Imagen) VALUES
+('Tiza(pack12)', 'Paquete de 12 tizas de billar de color azul', 5, 3, 'tiza.jpg');
+EXCEPTION
+WHEN OTHERS THEN 
+ROLLBACK;
+END;
+
+-- Insertar datos de pedidos --
+BEGIN
+INSERT INTO Pedidos (PedidoID, ClienteID, ProductoID, Cantidad, FechaPedido) VALUES
+(1, 1, 1, 2, TO_DATE('2024-03-01', 'YYYY-MM-DD'));
+INSERT INTO Pedidos (PedidoID, ClienteID, ProductoID, Cantidad, FechaPedido) VALUES
+(2, 2, 2, 1, TO_DATE('2024-03-02', 'YYYY-MM-DD'));
+INSERT INTO Pedidos (PedidoID, ClienteID, ProductoID, Cantidad, FechaPedido) VALUES
+(3, 3, 3, 3, TO_DATE('2024-03-03', 'YYYY-MM-DD'));
+EXCEPTION
+WHEN OTHERS THEN 
+ROLLBACK;
+END;
