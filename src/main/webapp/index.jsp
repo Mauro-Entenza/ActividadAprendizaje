@@ -4,7 +4,10 @@
 <%@ page import="com.PoolShop.dao.ProductDao" %>
 <%@ page import="org.jdbi.v3.core.Jdbi" %>
 <%@ page import="com.PoolShop.dao.BaseDatos" %>
-
+<%@ page import="com.PoolShop.Servicio" %>
+<%@ page import="com.PoolShop.User" %>
+<%@ page import="com.PoolShop.dao.ServicioDao" %>
+<%@ page import="com.PoolShop.dao.UserDao" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -43,9 +46,10 @@
 
 <body>
 <form class="col-md-3 text-end w-50">
-  <input type="text" class="form-control text-black" id="search-input" placeholder="Busca productos...">
+  <input type="text" class="form-control text-black" id="search-input" placeholder="Buscador por nombre o precio de Producto/Servicio...">
 </form>
-                <script>
+              <script>
+                document.addEventListener('DOMContentLoaded', () => {
                   const searchInput = document.getElementById('search-input');
                   const products = document.getElementsByClassName('card');
 
@@ -53,14 +57,17 @@
                     const searchQuery = searchInput.value.toLowerCase();
                     for (let i = 0; i < products.length; i++) {
                       const productName = products[i].getElementsByClassName('card-body')[0].getElementsByClassName('bg-info')[0].textContent.toLowerCase();
-                      if (productName.includes(searchQuery)) {
+                      const productPrice = products[i].getElementsByClassName('card-body')[0].getElementsByClassName('bg-secondary')[0].textContent.toLowerCase();
+                      if (productName.includes(searchQuery) || productPrice.includes(searchQuery)) {
                         products[i].style.display = '';
                       } else {
                         products[i].style.display = 'none';
                       }
                     }
                   });
-                </script>
+                });
+              </script>
+
                   <div class="col-md-3 text-start">
                     <% if (session.getAttribute("logged")!= null && (boolean) session.getAttribute("logged")) { %>
                       <button type="button" class="btn btn-outline-primary me-2">
@@ -70,6 +77,7 @@
                   </div>
       <div class="album py-5 bg-body-tertiary">
         <div class="container">
+         <h1>LISTA DE PRODUCTOS</h1>
           <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
             <%
               BaseDatos.connect();
@@ -80,7 +88,7 @@
             <div class="col">
               <div class="card shadow-sm">
                 <div class="card-body">
-                  <img src="../BillarImagenes/<%= product.getImagen() %>"width="100%" height="225"/>
+                      <img src="../BillarImagenes/<%= product.getImagen() %>"width="100%" height="225"/>
                   <div class="p-3 mb-2 bg-info text-white"><%= product.getNombre() %></div>
                   <div class="p-3 mb-2 bg-secondary text-white"><%= product.getPrecio() %>€ (PRECIO SIN IVA)</p></div>
                   <a href="detail.jsp?ProductoID=<%= product.getProductoID() %>" type="button" class="btn btn-sm btn-outline-primary">Ver</a>
@@ -94,6 +102,95 @@
           </div>
         </div>
       </div>
+<div class="album py-5 bg-body-tertiary">
+    <div class="container">
+    <div>
+                                       <h1>LISTA DE SERVICIOS</h1>
+
+                                   </div>
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+        <div class="col-md-3 text-start">
+                            <% if (session.getAttribute("logged")!= null && (boolean) session.getAttribute("logged")) { %>
+                              <button type="button" class="btn btn-outline-primary me-2">
+                                <a href="addServicio.jsp" class="text-decoration-none">Agregar Servicio</a>
+                              </button>
+
+                            <% } %>
+                          </div>
+
+
+            <%
+
+                BaseDatos.connect();
+
+                List<Servicio> servicios = BaseDatos.jdbi.withExtension(ServicioDao.class, dao -> dao.getAllServicios());
+                for (Servicio servicio : servicios) {
+            %>
+
+            <div class="col">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <div class="p-3 mb-2 bg-info text-white"><%= servicio.getNombre() %></div>
+                        <div class="p-3 mb-2 bg-secondary text-white"><%= servicio.getPrecio() %>€ (PRECIO SIN IVA)</div>
+                        <a href="detailServicio.jsp?ServicioID=<%= servicio.getServicioID() %>" type="button" class="btn btn-sm btn-outline-primary">Ver</a>
+                    </div>
+                </div>
+            </div>
+
+
+            <%
+                }
+            %>
+            </div>
+            <div class="album py-5 bg-body-tertiary">
+                <div class="container">
+                <div>
+                                                   <h1>LISTA DE USUARIOS</h1>
+
+                                               </div>
+                                               <form onsubmit="return false;">
+                                                                                               <input type="text" id="searchInput" onkeyup="filterUsers()" placeholder="Buscar por nombre">
+                                                                                           </form>
+                                            <div id="userCards" class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+                                                <%
+                                                    BaseDatos.connect();
+
+                                                    List<User> users= BaseDatos.jdbi.withExtension(UserDao.class, dao -> dao.getAllUsers());
+                                                    for (User user : users) {
+                                                %>
+
+                                                <div class="col">
+                                                    <div class="card shadow-sm">
+                                                        <div class="card-body">
+                                                            <div class="p-3 mb-2 bg-info text-white"><span class="card-title"><%= user.getNombre() %></span></div>
+                                                            <a href="detailUser.jsp?Nombre=<%= user.getNombre() %>" class="btn btn-sm btn-outline-primary">Ver</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <%
+                                                    }
+                                                %>
+                                            </div>
+
+                                            <script>
+                                                function filterUsers() {
+                                                    var input, filter, cards, cardContainer, title, i;
+                                                    input = document.getElementById("searchInput");
+                                                    filter = input.value.toLowerCase();
+                                                    cardContainer = document.getElementById("userCards");
+                                                    cards = cardContainer.getElementsByClassName("col");
+
+                                                    for (i = 0; i < cards.length; i++) {
+                                                        title = cards[i].getElementsByClassName("card-title")[0];
+                                                        if (title.innerHTML.toLowerCase().indexOf(filter) > -1) {
+                                                            cards[i].style.display = "";
+                                                        } else {
+                                                            cards[i].style.display = "none";
+                                                        }
+                                                    }
+                                                }
+                                            </script>
 
 
       <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
@@ -104,11 +201,9 @@
             <span class="mb-3 mb-md-0 text-body-secondary">© 2024 POOLSHOP, Copyright</span>
           </div>
 
-          <ul class="nav col-md-4 justify-content-end list-unstyled d-flex">
-            <li class="ms-3"><a class="text-body-secondary" href="#"><svg class="bi" width="24" height="24"><use xlink:href="#twitter"></use></svg></a></li>
-            <li class="ms-3"><a class="text-body-secondary" href="#"><svg class="bi" width="24" height="24"><use xlink:href="#instagram"></use></svg></a></li>
-            <li class="ms-3"><a class="text-body-secondary" href="#"><svg class="bi" width="24" height="24"><use xlink:href="#facebook"></use></svg></a></li>
-          </ul>
+
         </footer>
+
+
     </body>
 </html>

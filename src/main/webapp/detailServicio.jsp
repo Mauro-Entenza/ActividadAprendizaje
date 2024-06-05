@@ -1,12 +1,12 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ page import="com.PoolShop.Product" %>
-<%@ page import="com.PoolShop.dao.ProductDao" %>
+<%@ page import="com.PoolShop.Servicio" %>
+<%@ page import="com.PoolShop.dao.ServicioDao" %>
 <%@ page import="com.PoolShop.dao.BaseDatos" %>
 <!DOCTYPE html>
 <html>
 <head>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <title>Detalle del Producto</title>
+    <title>Detalle del Servicio</title>
     <style>
      .card-header {
            width: 100%;
@@ -43,30 +43,27 @@
             </div>
             <div class="card shadow">
                 <div class="card-header text-center">
-                    Detalle del Producto
+                    Detalle del Servicio
                 </div>
                 <div class="card-body">
 
                     <%
-                        int productoID = Integer.parseInt(request.getParameter("ProductoID"));
+                        int servicioID = Integer.parseInt(request.getParameter("ServicioID"));
                         BaseDatos.connect();
-                        Product product = BaseDatos.jdbi.withExtension(ProductDao.class, dao -> dao.getProduct(productoID));
+                        Servicio servicio = BaseDatos.jdbi.withExtension(ServicioDao.class, dao -> dao.getServicio(servicioID));
                     %>
-
-                    <img src="BillarImagenes/<%= product.getImagen() %>" class="card-img-top mb-3" alt="Imagen del Producto">
-                    <h5 class="card-title"><%= product.getNombre() %></h5>
-                    <p class="card-text"><%= product.getDescripcion() %></p>
-                    <p class="card-text">Precio: <%= product.getPrecio() %>€</p>
+                    <h5 class="card-title"><%= servicio.getNombre() %></h5>
+                    <p class="card-text"><%= servicio.getDescripcion() %></p>
+                    <p class="card-text">Precio: <%= servicio.getPrecio() %>€</p>
                 </div>
-                <div class="card-footer text-muted">
                     <% if (session.getAttribute("logged")!= null && (boolean) session.getAttribute("logged")) { %>
-                    <form action="editProduct.jsp" method="get" class="d-inline">
-                        <input type="hidden" name="productoID" value="<%= productoID %>">
-                        <a href="editProduct.jsp?ProductoID=<%= product.getProductoID() %>" type="button" class="btn btn-sm btn-outline-primary">Editar</a>
+                    <form action="editServicio.jsp" method="get" class="d-inline">
+                        <input type="hidden" name="servicioID" value="<%= servicioID %>">
+                        <a href="editServicio.jsp?servicioID=<%= servicio.getServicioID() %>" type="button" class="btn btn-sm btn-outline-primary">Editar</a>
                     </form>
-                    <form action="eliminarProducto" method="post" class="d-inline">
-                        <input type="hidden" name="productoID" value="<%= productoID %>">
-                        <button type="submit" class="btn btn-danger" onclick="return confirm('¿Está seguro de que desea eliminar este producto?');">Eliminar</button>
+                    <form action="eliminarServicio" method="post" class="d-inline">
+                        <input type="hidden" name="servicioID" value="<%= servicioID %>">
+                        <button type="submit" class="btn btn-danger" onclick="return confirm('¿Está seguro de que desea eliminar este servicio?');">Eliminar</button>
                     </form>
                      <% } else { %>
                      <% } %>

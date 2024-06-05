@@ -1,6 +1,6 @@
 package com.PoolShop.dao;
-import com.PoolShop.Product;
 import com.PoolShop.User;
+import org.jdbi.v3.sqlobject.customizer.Bind;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 import org.jdbi.v3.sqlobject.statement.UseRowMapper;
@@ -16,9 +16,9 @@ public interface UserDao {
     @SqlQuery("SELECT * FROM Clientes WHERE ClienteID = ?")
     @UseRowMapper(UserMapper.class)
     User getUserbyClienteID(String ClienteID);
-    @SqlQuery("SELECT * FROM Clientes WHERE Nombre = ?")
+    @SqlQuery("SELECT * FROM Clientes WHERE Nombre = :Nombre")
     @UseRowMapper(UserMapper.class)
-    User getUser(String Nombre);
+    User getUser(@Bind("Nombre") String Nombre);
 
     @SqlQuery("SELECT * FROM Clientes WHERE Nombre = ? AND Contraseña = ?")
     @UseRowMapper(UserMapper.class)
@@ -29,5 +29,15 @@ public interface UserDao {
 
     @SqlUpdate("UPDATE Clientes SET Nombre = ? WHERE ClienteID = ?")
     int updateUser(String Nombre, int ClienteID);
+
+    List<User> getUserByNombre(String s);
+    @SqlQuery("SELECT * FROM Clientes WHERE Nombre = ? ")
+    @UseRowMapper(UserMapper.class)
+    User getNombre(String Nombre);
+
+    Object updateUser(String clienteID, String nombre, String email);
+
+    @SqlUpdate("DELETE FROM Clientes WHERE Nombre = :Nombre")
+    void deleteUser(@Bind("Nombre") String Nombre);
 }
 

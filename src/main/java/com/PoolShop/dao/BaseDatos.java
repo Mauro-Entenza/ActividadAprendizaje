@@ -19,6 +19,9 @@ public class BaseDatos {
         db = jdbi.open();
     }
 
+    public static void disconnect() {
+    }
+
     public void close() throws SQLException{
         db.close();
     }
