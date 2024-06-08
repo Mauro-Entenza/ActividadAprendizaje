@@ -149,7 +149,7 @@
 
                                                </div>
                                                <form onsubmit="return false;">
-                                                                                               <input type="text" id="searchInput" onkeyup="filterUsers()" placeholder="Buscar por nombre">
+                                                                                               <input type="text" id="searchInput" onkeyup="filterUsers()" placeholder="Buscar usuario">
                                                                                            </form>
                                             <div id="userCards" class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
                                                 <%
@@ -163,6 +163,7 @@
                                                     <div class="card shadow-sm">
                                                         <div class="card-body">
                                                             <div class="p-3 mb-2 bg-info text-white"><span class="card-title"><%= user.getNombre() %></span></div>
+                                                            <div class="p-3 mb-2 bg-info text-white"><span class="card-title"><%= user.getEmail() %></span></div>
                                                             <a href="detailUser.jsp?Nombre=<%= user.getNombre() %>" class="btn btn-sm btn-outline-primary">Ver</a>
                                                         </div>
                                                     </div>
